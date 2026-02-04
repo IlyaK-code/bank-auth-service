@@ -46,5 +46,9 @@ Thumbs.db
 # Lombok (если используется)
 lombok.config
 
+# Автоматически сгенерированное Grafana и Prometheus
+authorization/main/resources/grafana/
+authorization/main/resources/prometheus/
+
 # Coverage (JaCoCo)
 jacoco.exec

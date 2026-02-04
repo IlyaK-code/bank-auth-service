@@ -45,15 +45,14 @@
 - JDK 17 (для локальной сборки)
 
 ### Локальный запуск
-```bash
-# Сборка проекта
-mvn clean package -DskipTests
 
-# Запуск всех сервисов
-docker-compose up -d
+**Сборка проекта**:
+ Соберите все микросервисы в jar файлы (mvn package)
 
-# Сервисы будут доступны по адресам:
-# - Authorization API: http://localhost:8087
-# - Eureka Dashboard: http://localhost:8761
-# - Grafana: http://localhost:3000 (admin/admin)
-# - Prometheus: http://localhost:9090
+**Запуск всех сервисов**:  docker-compose up -d
+
+## Сервисы будут доступны по адресам:
+- Authorization API: http://localhost:8087
+- Eureka Dashboard: http://localhost:8761
+- Grafana: http://localhost:3000 (admin/admin)
+- Prometheus: http://localhost:9090
