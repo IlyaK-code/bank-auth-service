@@ -1,0 +1,84 @@
+#  eureka.client.serviceUrl.defaultZone=${EURIKA_URI:http://localhost:8761/eureka}
+#    eureka.instance.prefer-ip-address=true
+server:
+  port: 8087
+  servlet:
+    context-path:
+management:
+  server:
+    port: 8187
+  endpoint:
+    prometheus:
+      enabled: true
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+
+spring:
+  application:
+    name: authorization-app
+  profiles:
+    active: local
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  datasource:
+    url: jdbc:postgresql://localhost:5433/authorizations
+#    url: jdbc:postgresql://host.docker.internal:5433/authorizations
+    username: admin
+    password: admin
+
+    hikari:
+      maximum-pool-size: 20
+      driver-class-name: org.postgresql.Driver
+      #    dbcp2:
+    #      default-schema: auth
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: validate
+    open-in-view: true
+  liquibase:
+    default-schema: authorizations
+    change-log: db/changelog/db.changelog-master.yaml
+    enabled: true
+    drop-first: false
+
+security:
+  jwt:
+    secret_key: 1b1a9dba33d074ddfc7242af069d51cdd44ddac6bfad3692758ccec457ee199c
+    access_token_expiration: 3600000 # 1 hour
+    refresh_token_expiration: 7200000 # 2 hours
+
+eureka:
+  client:
+    service-url:
+#      defaultZone: http://host.docker.internal:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/
+  #      register-with-eureka: true
+  #      fetch-registry: true
+  #  instance:
+  #    prefer-ip-address: true
+  #logging:
+  #  level:
+  #    org:
+  #      springframework:
+  #        aop: debug
+  #        beans: debug

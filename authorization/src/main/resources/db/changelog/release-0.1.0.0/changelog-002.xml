@@ -1,0 +1,34 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+    <changeSet id="1734339392120-4" author="Илья">
+        <createTable remarks="токены авторизации пользователей" tableName="tokens">
+            <column name="id" autoIncrement="true" remarks="технический идентификатор" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="token_pkey"/>
+            </column>
+            <column name="access_token" remarks="токен доступа" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="refresh_token" remarks="обновленный токен" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_logged_out" remarks="булевская переменная авторизации" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="users_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="tokens"
+                baseColumnNames="users_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_token_user"
+                onDelete="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

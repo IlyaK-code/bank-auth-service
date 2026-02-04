@@ -1,0 +1,67 @@
+version: '3.7'
+services:
+  # Environment
+  bank-db:
+    image: postgres:17
+    hostname: bank-db
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: authorizations
+    volumes:
+      - ./authorization/src/main/resources/db/changelog/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - bank-net
+
+  eureka-server:
+    build: ./eureka-service
+    ports:
+      - "8761:8761"
+    networks:
+      - bank-net
+
+  authorization:
+    build: ./authorization
+    ports:
+      - "8087:8087"
+    depends_on:
+      - bank-db
+      - eureka-server
+    networks:
+      - bank-net
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    build: './authorization/src/main/config/grafana'
+    ports:
+      - 3000:3000
+    volumes:
+      - ./authorization/src/main/resources/grafana/provisioning:/etc/grafana/provisioning
+      - ./authorization/src/main/resources/grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ./authorization/src/main/resources/prometheus.yaml:/etc/prometheus/prometheus.yml
+      - ./authorization/src/main/resources/prometheus:/prometheus
+    networks:
+      - monitoring
+networks:
+  bank-net:
+    driver: bridge
+  monitoring:
+    driver: bridge
+
+volumes:
+  pgdata:
